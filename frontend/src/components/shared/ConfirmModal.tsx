@@ -38,7 +38,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       backdropFilter: 'blur(4px)'
     }}>
       <div style={{
-        backgroundColor: '#fff',
+        backgroundColor: 'var(--surface)',
         borderRadius: '12px',
         padding: '24px',
         width: '100%',
@@ -62,7 +62,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
               padding: '10px 16px',
               borderRadius: '8px',
               border: '1px solid #e2e8f0',
-              backgroundColor: '#fff',
+              backgroundColor: 'var(--surface)',
               color: '#475569',
               fontSize: '14px',
               fontWeight: 600,

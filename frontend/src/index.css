@@ -1,13 +1,87 @@
-:root{
-  /* Trục màu đỏ maroon, đồng bộ logo/website DAU (#990000). */
-  --blue:#990000; --blue-d:#7a0000; --blue-50:#fdf3f3; --blue-100:#f7d9d9;
-  --ink:#1e293b; --muted:#64748b; --line:#e2e8f0; --bg:#ffffff; --soft:#faf7f7;
-  --amber:#b45309; --amber-bg:#fffbeb; --red:#b91c1c; --red-bg:#fef2f2; --green:#15803d;
-  --gold:#FBAE40;
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+:root {
+  /* Layout Colors */
+  --app-bg: #f3f4f6; /* Outer canvas background */
+  
+  /* Sidebar Colors (Always Dark Indigo) */
+  --sidebar-bg: #1e1b4b; 
+  --sidebar-border: #312e81;
+  --sidebar-text: #e0e7ff;
+  --sidebar-muted: #818cf8;
+  --sidebar-hover: rgba(99, 102, 241, 0.2);
+  --sidebar-active: #4f46e5;
+  --sidebar-active-glow: 0 0 15px rgba(79, 70, 229, 0.6);
+
+  /* Primary Brand Colors (Indigo & Purple Gradients) */
+  --blue: #4f46e5; /* Main Indigo */
+  --blue-d: #4338ca;
+  --blue-50: #eef2ff;
+  --blue-100: #e0e7ff;
+  
+  --purple: #7c3aed;
+  --primary-gradient: linear-gradient(135deg, #4f46e5, #7c3aed);
+  
+  /* Content Colors (Light Mode) */
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-hover: #f8fafc;
+  --ink: #0f172a;
+  --muted: #64748b;
+  --line: #e2e8f0;
+  --soft: #f8fafc;
+  
+  /* Status Colors */
+  --amber: #d97706; 
+  --amber-bg: #fef3c7; 
+  --red: #ef4444; 
+  --red-bg: #fee2e2; 
+  --green: #10b981;
+  --gold: #f59e0b;
+
+  /* Shadows & Glass */
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --shadow-glow: 0 10px 25px -5px rgba(79, 70, 229, 0.2);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.4);
 }
+
+.dark {
+  --app-bg: #020617; /* Very dark outer canvas */
+  
+  /* Sidebar remains same dark indigo or deeper */
+  --sidebar-bg: #0f0b29;
+  --sidebar-border: #1e1b4b;
+
+  /* Content Colors (Dark Mode) */
+  --blue: #818cf8;
+  --blue-d: #6366f1;
+  --blue-50: rgba(79, 70, 229, 0.15);
+  --blue-100: rgba(79, 70, 229, 0.25);
+
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface-hover: #334155;
+  --ink: #f8fafc;
+  --muted: #94a3b8;
+  --line: #334155;
+  --soft: #0f172a;
+
+  --amber: #fbbf24; 
+  --amber-bg: rgba(245, 158, 11, 0.15); 
+  --red: #f87171; 
+  --red-bg: rgba(239, 68, 68, 0.15); 
+  --green: #34d399;
+  
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+  --glass-bg: rgba(30, 41, 59, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.05);
+}
+
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink);
-  font-family:-apple-system,"Segoe UI","Be Vietnam Pro",Roboto,system-ui,sans-serif;line-height:1.55}
+html,body{margin:0;background:var(--app-bg);color:var(--ink);
+  font-family:"Inter",-apple-system,sans-serif;line-height:1.55;transition:background 0.3s ease,color 0.3s ease}
 a{color:var(--blue);text-decoration:none}
 .wrap{max-width:1600px;margin:0 auto;padding:0 20px}
 header{background:var(--blue);position:sticky;top:0;z-index:10;box-shadow:0 1px 0 rgba(0,0,0,.15)}
@@ -253,3 +327,83 @@ mark{background:#fde68a;color:inherit;padding:0 2px;border-radius:3px}
   pointer-events: none;
 }
 
+
+
+/* Dashboard Cards (Wow Effect) */
+.stat, .metric, .panel, .ev, .card, .impact, .tile, .rlist {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-card);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.stat:hover, .metric:hover, .ev:hover, .card:hover, .prow:hover, .r:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+  border-color: var(--blue-100);
+  background: var(--surface-hover);
+}
+
+/* Gradient Borders on Hover (Glow) */
+.stat::after, .metric::after, .ev::after, .card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: var(--primary-gradient);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.stat:hover::after, .metric:hover::after, .ev:hover::after, .card:hover::after {
+  opacity: 1;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* Skeleton Loading */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.skeleton {
+  background: var(--line);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* UX Refinements (Whitespace & Animation) */
+.stat, .panel {
+  padding: 24px;
+}
+.metric b {
+  font-size: 32px;
+}
+.r {
+  border-radius: 12px;
+  margin: 0 8px 8px 8px;
+  border-bottom: none;
+  border: 1px solid transparent;
+}
+.r:hover {
+  border-color: var(--line);
+}
+.rlist {
+  padding: 8px 0;
+}
+.fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

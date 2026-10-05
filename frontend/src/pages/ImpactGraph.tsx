@@ -4,7 +4,7 @@ import { useDetail } from '../context/DetailContext';
 
 const ImpactGraph: React.FC = () => {
   const { openDetail } = useDetail();
-  const { data } = useData();
+  const { data, loading } = useData();
   const impact = data.impact || [];
   const [filterType, setFilterType] = useState('Tất cả');
   const [selectedCanCu, setSelectedCanCu] = useState<string>('');
@@ -30,7 +30,35 @@ const ImpactGraph: React.FC = () => {
     }
   }, [filteredImpact, selectedCanCu]);
 
-  if (impact.length === 0) return null;
+  if (loading) {
+    return (
+      <section id="do-thi" className="fade-in">
+        <div className="wrap">
+          <h2>Đồ thị mức độ ảnh hưởng</h2>
+          <p className="sub">Đang tải dữ liệu đồ thị...</p>
+          <div className="impact" style={{ padding: '24px' }}>
+             <div style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}>
+               <span className="skeleton" style={{ width: '100%', height: '100%', borderRadius: '12px' }}></span>
+             </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (impact.length === 0) {
+    return (
+      <section id="do-thi" className="fade-in">
+        <div className="wrap">
+          <h2>Đồ thị mức độ ảnh hưởng</h2>
+          <p className="sub">Trực quan hoá dây chuyền "văn bản kéo văn bản".</p>
+          <div className="impact" style={{ padding: '60px 24px', textAlign: 'center' }}>
+            <h3 style={{ color: 'var(--muted)', fontSize: '18px' }}>Chưa có dữ liệu phân tích đồ thị</h3>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   const x = filteredImpact.find((item: any) => item.canCu === selectedCanCu) || filteredImpact[0];
   const deps = x ? x.dependents : [];
@@ -68,7 +96,7 @@ const ImpactGraph: React.FC = () => {
         <h2>Đồ thị mức độ ảnh hưởng</h2>
         <p className="sub">Trực quan hoá dây chuyền "văn bản kéo văn bản".</p>
 
-        <div className="impact">
+        <div className="impact" style={{ padding: '24px' }}>
           <div style={{ marginBottom: '14px', display: 'flex', gap: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <span style={{ fontSize: '13px', color: 'var(--muted)', whiteSpace: 'nowrap' }}>
@@ -149,7 +177,7 @@ const ImpactGraph: React.FC = () => {
                           refY="3"
                           orient="auto"
                         >
-                          <path d="M0,0 L7,3 L0,6 Z" fill="#b91c1c" />
+                          <path d="M0,0 L7,3 L0,6 Z" fill="var(--red)" />
                         </marker>
                       </defs>
 
@@ -165,7 +193,7 @@ const ImpactGraph: React.FC = () => {
                             key={`path-${i}`}
                             d={`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2 - 2},${y2}`}
                             fill="none"
-                            stroke="#d99"
+                            stroke="var(--red)"
                             strokeWidth="1.6"
                             markerEnd="url(#ah)"
                           />
@@ -179,8 +207,8 @@ const ImpactGraph: React.FC = () => {
                           width={bw}
                           height={56}
                           rx={10}
-                          fill="#fef2f2"
-                          stroke="#b91c1c"
+                          fill="var(--red-bg)"
+                          stroke="var(--red)"
                           strokeWidth="1.8"
                           strokeDasharray="5 3"
                         />
@@ -189,7 +217,7 @@ const ImpactGraph: React.FC = () => {
                           y={by - 6}
                           textAnchor="middle"
                           fontSize="9.5"
-                          fill="#b91c1c"
+                          fill="var(--red)"
                           fontWeight="700"
                         >
                           CĂN CỨ HẾT HIỆU LỰC
@@ -199,7 +227,7 @@ const ImpactGraph: React.FC = () => {
                           y={by + 12}
                           textAnchor="middle"
                           fontSize="13"
-                          fill="#1e293b"
+                          fill="var(--ink)"
                           fontWeight="700"
                         >
                           {x.canCu}
@@ -215,16 +243,16 @@ const ImpactGraph: React.FC = () => {
                               width={bw}
                               height={30}
                               rx={8}
-                              fill="#f0fdf4"
-                              stroke="#15803d"
+                              fill="rgba(21, 128, 61, 0.1)"
+                              stroke="var(--green)"
                               strokeWidth="1.4"
                             />
-                            <text x={bx + bw / 2} y={by + 59} textAnchor="middle" fontSize="11.5" fill="#15803d">
+                            <text x={bx + bw / 2} y={by + 59} textAnchor="middle" fontSize="11.5" fill="var(--green)">
                               thay bằng:{' '}
                               <tspan fontWeight="700">{x.thayBang}</tspan>
                             </text>
                           </g>
-                          <line x1={bx + bw / 2} y1={by + 28} x2={bx + bw / 2} y2={by + 40} stroke="#15803d" strokeWidth="1.2" />
+                          <line x1={bx + bw / 2} y1={by + 28} x2={bx + bw / 2} y2={by + 40} stroke="var(--green)" strokeWidth="1.2" />
                         </>
                       )}
 
@@ -243,15 +271,15 @@ const ImpactGraph: React.FC = () => {
                               width={dw}
                               height={dh}
                               rx={8}
-                              fill="#fff"
-                              stroke="#990000"
+                              fill="var(--surface)"
+                              stroke="var(--red)"
                               strokeWidth="1.3"
                             />
-                            <text x={dx + 12} y={dy + 2} fontSize="12.5" fill="#1e293b" fontWeight="600">
+                            <text x={dx + 12} y={dy + 2} fontSize="12.5" fill="var(--ink)" fontWeight="600">
                               {d.soHieu}
                             </text>
                             {d.loai && (
-                              <text x={dx + 12} y={dy + 15} fontSize="9.5" fill="#64748b">
+                              <text x={dx + 12} y={dy + 15} fontSize="9.5" fill="var(--muted)">
                                 {d.loai} · bấm xem chi tiết
                               </text>
                             )}

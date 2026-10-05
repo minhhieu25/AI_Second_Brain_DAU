@@ -187,7 +187,7 @@ const ReviewQueue: React.FC = () => {
         )}
 
         {isEditing && (
-          <div style={{ marginBottom: '12px', padding: '12px', backgroundColor: '#fffbe6', borderLeft: '3px solid var(--amber)', borderRadius: '4px' }}>
+          <div style={{ marginBottom: '12px', padding: '12px', backgroundColor: 'var(--amber-bg)', borderLeft: '3px solid var(--amber)', borderRadius: '4px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
               <div style={{ fontSize: '13px', fontWeight: 'bold', color: 'var(--amber)' }}>Chế độ Sửa (Human-in-the-loop):</div>
               <button className="btn" disabled={revalidating} style={{ padding: '4px 10px', fontSize: '12px', background: 'var(--amber)', color: 'white', borderRadius: '6px', cursor: 'pointer', border: 'none' }} onClick={() => handleRevalidate(item.nguon)}>
@@ -210,7 +210,7 @@ const ReviewQueue: React.FC = () => {
         <div style={{ display: 'flex', gap: '12px', marginTop: '20px', justifyContent: 'flex-end' }}>
           <button
             className="btn"
-            style={{ background: '#fff', border: '1px solid var(--line)', color: 'var(--red)', display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, transition: '0.2s' }}
+            style={{ background: 'var(--surface)', border: '1px solid var(--line)', color: 'var(--red)', display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, transition: '0.2s' }}
             onClick={() => handleReject(item._itemType, item.id)}
             onMouseOver={(e) => (e.currentTarget.style.background = 'var(--red-bg)')}
             onMouseOut={(e) => (e.currentTarget.style.background = '#fff')}
@@ -264,7 +264,7 @@ const ReviewQueue: React.FC = () => {
             </p>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#fff', border: '1px solid var(--line)', padding: '6px', borderRadius: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--surface)', border: '1px solid var(--line)', padding: '6px', borderRadius: '12px' }}>
             <Filter size={16} style={{ color: 'var(--muted)', marginLeft: '8px' }} />
             <select
               value={filterType}
@@ -279,7 +279,7 @@ const ReviewQueue: React.FC = () => {
         </div>
 
         {pendingItems.length === 0 ? (
-          <div style={{ padding: '60px 40px', textAlign: 'center', backgroundColor: '#fff', borderRadius: '16px', border: '1px dashed var(--line)', marginTop: '20px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+          <div style={{ padding: '60px 40px', textAlign: 'center', backgroundColor: 'var(--surface)', borderRadius: '16px', border: '1px dashed var(--line)', marginTop: '20px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
             <h3 style={{ color: 'var(--green)', fontSize: '22px', marginBottom: '8px' }}>Tuyệt vời! 🎉</h3>
             <p className="sub" style={{ fontSize: '16px' }}>Không còn văn bản nào đang chờ duyệt trong hàng đợi.</p>
           </div>
@@ -289,7 +289,7 @@ const ReviewQueue: React.FC = () => {
               <div key={`${item._itemType}-${item.id}`} className="card" style={{
                 display: 'flex', gap: '24px', alignItems: 'stretch', padding: '24px',
                 borderRadius: '16px', boxShadow: '0 8px 30px rgba(0,0,0,0.04)', border: '1px solid var(--line)',
-                background: '#fff', transition: '0.3s'
+                background: 'var(--surface)', transition: '0.3s'
               }}>
                 <div style={{ flex: 1, paddingRight: '24px', borderRight: '1px solid var(--line)', display: 'flex', flexDirection: 'column' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>

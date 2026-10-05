@@ -19,6 +19,7 @@ import AuditLogs from './pages/AuditLogs';
 import RejectedDocs from './pages/RejectedDocs';
 import Login from './pages/Login';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 
 const ProtectedRoute = ({ children, requireAdmin = false }: { children: React.ReactNode, requireAdmin?: boolean }) => {
   const { token, role, isLoading } = useAuth();
@@ -32,48 +33,51 @@ const ProtectedRoute = ({ children, requireAdmin = false }: { children: React.Re
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            
-            <Route path="/" element={<ProtectedRoute><DataProvider><Layout /></DataProvider></ProtectedRoute>}>
-              <Route index element={<Navigate to="/priority" replace />} />
+    <ThemeProvider>
+      <Router>
+        <AuthProvider>
+            <Routes>
+              <Route path="/login" element={<Login />} />
               
-              {/* Admin only routes */}
-              <Route path="priority" element={<ProtectedRoute requireAdmin><PriorityList /></ProtectedRoute>} />
-              <Route path="dead-docs" element={<ProtectedRoute requireAdmin><DeadDocs /></ProtectedRoute>} />
-              <Route path="deadlines" element={<ProtectedRoute requireAdmin><Deadlines /></ProtectedRoute>} />
-              <Route path="events" element={<ProtectedRoute requireAdmin><LawEvents /></ProtectedRoute>} />
-              <Route path="review" element={<ProtectedRoute requireAdmin><ReviewQueue /></ProtectedRoute>} />
-              <Route path="topics" element={<ProtectedRoute requireAdmin><Topics /></ProtectedRoute>} />
-              <Route path="admin" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
-              <Route path="audit" element={<ProtectedRoute requireAdmin><AuditLogs /></ProtectedRoute>} />
-              <Route path="rejected" element={<ProtectedRoute requireAdmin><RejectedDocs /></ProtectedRoute>} />
-              
-              {/* Both roles routes */}
-              <Route path="analytics" element={<Analytics />} />
-              <Route path="search" element={<Search />} />
-              <Route path="chat" element={<Chat />} />
-              <Route path="obligations" element={<Obligations />} />
-              <Route path="thresholds" element={<Thresholds />} />
-              <Route path="graph" element={<ImpactGraph />} />
-            </Route>
-          </Routes>
-      </AuthProvider>
-      <Toaster 
-        position="bottom-right"
-        toastOptions={{
-          style: {
-            borderRadius: '10px',
-            background: '#333',
-            color: '#fff',
-            fontSize: '14px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-          },
-        }} 
-      />
-    </Router>
+              <Route path="/" element={<ProtectedRoute><DataProvider><Layout /></DataProvider></ProtectedRoute>}>
+                <Route index element={<Navigate to="/priority" replace />} />
+                
+                {/* Admin only routes */}
+                <Route path="priority" element={<ProtectedRoute requireAdmin><PriorityList /></ProtectedRoute>} />
+                <Route path="dead-docs" element={<ProtectedRoute requireAdmin><DeadDocs /></ProtectedRoute>} />
+                <Route path="deadlines" element={<ProtectedRoute requireAdmin><Deadlines /></ProtectedRoute>} />
+                <Route path="events" element={<ProtectedRoute requireAdmin><LawEvents /></ProtectedRoute>} />
+                <Route path="review" element={<ProtectedRoute requireAdmin><ReviewQueue /></ProtectedRoute>} />
+                <Route path="topics" element={<ProtectedRoute requireAdmin><Topics /></ProtectedRoute>} />
+                <Route path="admin" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
+                <Route path="audit" element={<ProtectedRoute requireAdmin><AuditLogs /></ProtectedRoute>} />
+                <Route path="rejected" element={<ProtectedRoute requireAdmin><RejectedDocs /></ProtectedRoute>} />
+                
+                {/* Both roles routes */}
+                <Route path="analytics" element={<Analytics />} />
+                <Route path="search" element={<Search />} />
+                <Route path="chat" element={<Chat />} />
+                <Route path="obligations" element={<Obligations />} />
+                <Route path="thresholds" element={<Thresholds />} />
+                <Route path="graph" element={<ImpactGraph />} />
+              </Route>
+            </Routes>
+        </AuthProvider>
+        <Toaster 
+          position="bottom-right"
+          toastOptions={{
+            style: {
+              borderRadius: '10px',
+              background: 'var(--bg)',
+              color: 'var(--ink)',
+              fontSize: '14px',
+              border: '1px solid var(--line)',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            },
+          }} 
+        />
+      </Router>
+    </ThemeProvider>
   );
 }
 

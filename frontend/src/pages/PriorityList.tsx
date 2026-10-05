@@ -1,10 +1,11 @@
 import React from 'react';
 import { useData } from '../context/DataContext';
 import { useDetail } from '../context/DetailContext';
+import Skeleton from '../components/shared/Skeleton';
 
 const PriorityList: React.FC = () => {
   const { openDetail } = useDetail();
-  const { data, refreshData, markAsRead, readWarnings } = useData();
+  const { data, loading, refreshData, markAsRead, readWarnings } = useData();
   const rows = [...(data.insights?.uuTien || [])].sort((a: any, b: any) => {
     const aUnread = !readWarnings.includes(a.soHieu);
     const bUnread = !readWarnings.includes(b.soHieu);
@@ -27,13 +28,13 @@ const PriorityList: React.FC = () => {
   };
 
   return (
-    <section id="uu-tien">
+    <section id="uu-tien" className="fade-in">
       <div className="wrap">
         <h2>Ưu tiên xử lý trước</h2>
         <p className="sub">
           Xếp theo mức độ: văn bản có căn cứ <b>bị bãi bỏ</b> và dính <b>nhiều căn cứ hỏng</b> lên đầu. Bấm để xem chi tiết.
         </p>
-        <div id="priority">
+        <div id="priority" className="rlist">
           <div className="prow phead" style={{ display: 'grid', gridTemplateColumns: '40px 3fr 2fr 1fr 1fr', textTransform: 'uppercase', fontSize: '11px', color: 'var(--muted)', fontWeight: 700, paddingBottom: '12px', borderBottom: '1px solid var(--line)', marginBottom: '8px' }}>
             <span>#</span>
             <span>Văn bản</span>
@@ -41,8 +42,15 @@ const PriorityList: React.FC = () => {
             <span>Căn cứ hỏng</span>
             <span>Mức độ</span>
           </div>
-          {rows.length === 0 ? (
-            <div style={{ padding: '60px 40px', textAlign: 'center', backgroundColor: '#fff', borderRadius: '12px', border: '1px dashed var(--line)', marginTop: '20px' }}>
+          {loading ? (
+            <>
+              <div className="prow"><Skeleton width="100%" height="24px" /></div>
+              <div className="prow"><Skeleton width="100%" height="24px" /></div>
+              <div className="prow"><Skeleton width="100%" height="24px" /></div>
+              <div className="prow"><Skeleton width="100%" height="24px" /></div>
+            </>
+          ) : rows.length === 0 ? (
+            <div style={{ padding: '60px 40px', textAlign: 'center', backgroundColor: 'var(--surface)', borderRadius: '12px', border: '1px dashed var(--line)', marginTop: '20px' }}>
               <h3 style={{ color: 'var(--green)', fontSize: '20px', marginBottom: '8px' }}>Mọi thứ đang ổn định</h3>
               <p className="sub">Hiện tại không có văn bản nào cần ưu tiên rà soát do xung đột căn cứ.</p>
             </div>

@@ -64,12 +64,18 @@ const Sidebar: React.FC = () => {
 
 
   return (
-    <aside className="sidebar" style={{ width: '260px', background: '#fff', borderRight: '1px solid var(--line)', paddingTop: '20px', display: 'flex', flexDirection: 'column', height: '100vh', position: 'sticky', top: 0 }}>
-      <div className="sidebar-header" style={{ padding: '0 20px', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <div className="logo" style={{ width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <img src="/dau-logo.png" alt="DAU" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+    <aside className="sidebar" style={{ 
+      width: '260px', background: 'var(--sidebar-bg)', 
+      borderRadius: '24px', padding: '24px 0 0 0', display: 'flex', flexDirection: 'column', 
+      height: 'calc(100vh - 32px)', position: 'sticky', top: '16px', zIndex: 20,
+      border: '1px solid var(--sidebar-border)', color: 'var(--sidebar-text)',
+      boxShadow: '0 10px 40px rgba(0, 0, 0, 0.15)'
+    }}>
+      <div className="sidebar-header" style={{ padding: '0 24px', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div className="logo" style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--primary-gradient)', borderRadius: '12px', boxShadow: '0 4px 10px rgba(79, 70, 229, 0.4)' }}>
+          <img src="/dau-logo.png" alt="DAU" style={{ maxWidth: '65%', maxHeight: '65%', filter: 'brightness(0) invert(1)' }} />
         </div>
-        <span style={{ fontWeight: 800, color: 'var(--blue)', fontSize: '18px' }}>Second Brain</span>
+        <span style={{ fontWeight: 800, color: '#fff', fontSize: '18px', letterSpacing: '-0.02em', background: 'var(--primary-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Core AI</span>
       </div>
       
       {/* Sidebar nav wrap */}
@@ -79,7 +85,7 @@ const Sidebar: React.FC = () => {
           
           {role === 'admin' && (
             <>
-              <div style={{ padding: '8px 12px', fontSize: '11px', fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <div className="sidebar-section">
                 Cảnh báo & Rà soát
               </div>
           <NavLink to="/priority" className={({ isActive }) => `navtabs-a ${isActive ? 'active' : ''}`} style={{...navStyle, justifyContent: 'space-between'}}>
@@ -128,7 +134,7 @@ const Sidebar: React.FC = () => {
           </>
           )}
           
-          <div style={{ padding: '16px 12px 8px', fontSize: '11px', fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <div className="sidebar-section">
             Tra cứu & Dữ liệu
           </div>
           <NavLink to="/search" className={({ isActive }) => `navtabs-a ${isActive ? 'active' : ''}`} style={navStyle}>
@@ -160,7 +166,7 @@ const Sidebar: React.FC = () => {
 
           {role === 'admin' && (
           <>
-          <div style={{ padding: '16px 12px 8px', fontSize: '11px', fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <div className="sidebar-section">
             Hệ thống
           </div>
           <NavLink to="/admin" className={({ isActive }) => `navtabs-a ${isActive ? 'active' : ''}`} style={{...navStyle, justifyContent: 'space-between'}}>
@@ -191,19 +197,21 @@ const Sidebar: React.FC = () => {
         </nav>
       </div>
       
-      <div style={{ padding: '20px', borderTop: '1px solid var(--line)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-          <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--blue-50)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--blue)', fontWeight: 'bold' }}>
+      <div style={{ padding: '24px 20px', borderTop: '1px solid var(--sidebar-border)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+          <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'var(--sidebar-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 'bold' }}>
             {user?.email?.[0].toUpperCase()}
           </div>
           <div style={{ overflow: 'hidden' }}>
-            <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--ink)', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{user?.email}</div>
-            <div style={{ fontSize: '11px', color: 'var(--muted)' }}>{role === 'admin' ? 'Quản trị viên' : 'Giảng viên'}</div>
+            <div style={{ fontSize: '14px', fontWeight: 600, color: '#fff', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{user?.email}</div>
+            <div style={{ fontSize: '12px', color: 'var(--sidebar-muted)' }}>{role === 'admin' ? 'Quản trị viên' : 'Giảng viên'}</div>
           </div>
         </div>
         <button 
           onClick={() => setIsLogoutModalOpen(true)}
-          style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%', padding: '10px', background: 'transparent', border: '1px solid var(--line)', borderRadius: '6px', color: 'var(--red)', cursor: 'pointer', fontSize: '13px', fontWeight: 600, justifyContent: 'center' }}
+          style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%', padding: '12px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '12px', color: '#f87171', cursor: 'pointer', fontSize: '14px', fontWeight: 600, justifyContent: 'center', transition: '0.2s' }}
+          onMouseOver={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)'}
+          onMouseOut={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'}
         >
           <LogOut size={16} /> Đăng xuất
         </button>
@@ -227,22 +235,32 @@ const Sidebar: React.FC = () => {
           display: flex;
           align-items: center;
           gap: 12px;
-          padding: 10px 14px;
-          color: var(--muted);
+          padding: 12px 16px;
+          color: var(--sidebar-muted);
           text-decoration: none;
           font-size: 14px;
-          font-weight: 600;
-          border-radius: 8px;
-          transition: 0.15s;
+          font-weight: 500;
+          border-radius: 12px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          border: 1px solid transparent;
         }
         .navtabs-a:hover {
-          background: var(--soft);
-          color: var(--ink);
+          background: var(--sidebar-hover);
+          color: #fff;
         }
         .navtabs-a.active {
-          background: var(--blue-50);
-          color: var(--blue);
-          border-right: 3px solid var(--blue);
+          background: var(--sidebar-active);
+          color: #fff;
+          box-shadow: var(--sidebar-active-glow);
+          border: 1px solid rgba(255,255,255,0.1);
+        }
+        .sidebar-section {
+          padding: 24px 16px 8px;
+          font-size: 11px;
+          font-weight: 700;
+          color: var(--sidebar-border);
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
         }
       `}</style>
     </aside>

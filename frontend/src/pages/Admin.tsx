@@ -262,7 +262,7 @@ const Admin: React.FC = () => {
             onClick={handlePing} 
             disabled={isPinging}
             style={{
-              background: '#fff', color: 'var(--ink)', border: '1px solid var(--line)', padding: '10px 20px', 
+              background: 'var(--surface)', color: 'var(--ink)', border: '1px solid var(--line)', padding: '10px 20px', 
               borderRadius: '8px', fontWeight: 600, cursor: isPinging ? 'not-allowed' : 'pointer',
               display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
             }}>
@@ -327,7 +327,7 @@ const Admin: React.FC = () => {
             
             <div style={{ 
               display: 'flex', gap: '15px', marginBottom: '20px', flexWrap: 'wrap',
-              background: '#fff', padding: '16px', borderRadius: '12px', border: '1px solid var(--amber-200)',
+              background: 'var(--surface)', padding: '16px', borderRadius: '12px', border: '1px solid var(--amber-200)',
               boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
             }}>
               <div style={{ flex: '1 1 300px', display: 'flex', alignItems: 'center', border: '1px solid var(--line)', borderRadius: '8px', padding: '0 12px', background: 'var(--soft)' }}>
@@ -364,7 +364,7 @@ const Admin: React.FC = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  background: '#fff',
+                  background: 'var(--surface)',
                   boxShadow: '0 4px 15px rgba(0,0,0,0.02)',
                   transition: 'transform 0.2s',
                 }}>
@@ -412,7 +412,7 @@ const Admin: React.FC = () => {
                 </div>
               ))}
               {filteredCrawledFiles.length === 0 && (
-                <div style={{ gridColumn: '1 / -1', padding: '40px', textAlign: 'center', color: 'var(--muted)', background: '#fff', borderRadius: '12px', border: '1px dashed var(--amber-200)' }}>
+                <div style={{ gridColumn: '1 / -1', padding: '40px', textAlign: 'center', color: 'var(--muted)', background: 'var(--surface)', borderRadius: '12px', border: '1px dashed var(--amber-200)' }}>
                   Không tìm thấy văn bản phù hợp với bộ lọc.
                 </div>
               )}

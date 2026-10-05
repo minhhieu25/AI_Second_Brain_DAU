@@ -1,13 +1,15 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Bell, User, CheckCircle2, AlertTriangle, CalendarClock, ClipboardList, FileText } from 'lucide-react';
+import { Bell, User, CheckCircle2, AlertTriangle, CalendarClock, ClipboardList, FileText, Moon, Sun } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 
 const Header: React.FC = () => {
   const { data, readWarnings, readDeadlines, markAsRead } = useData();
   const { role } = useAuth();
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
   
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -97,23 +99,39 @@ const Header: React.FC = () => {
   return (
     <header className="header" style={{
       display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-      padding: '0 20px', height: '58px', background: 'var(--blue)', color: '#fff',
-      boxShadow: '0 1px 0 rgba(0,0,0,.15)', zIndex: 10, position: 'sticky', top: 0
+      padding: '0 20px', height: '58px', background: 'var(--glass-bg)', color: 'var(--ink)',
+      boxShadow: 'var(--shadow-sm)', zIndex: 10, position: 'sticky', top: 0,
+      backdropFilter: 'blur(12px)', borderBottom: '1px solid var(--glass-border)'
     }}>
       <div className="header-left" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <div className="brand" style={{ fontWeight: 700, fontSize: '16px' }}>Hệ thống Trợ lý Pháp lý</div>
+        <div className="brand" style={{ fontWeight: 700, fontSize: '16px', color: 'var(--blue)' }}>Hệ thống Trợ lý Pháp lý</div>
       </div>
       <div className="header-right" style={{ display: 'flex', gap: '1.25rem', alignItems: 'center' }}>
         
+        {/* Nút chuyển đổi Theme */}
+        <button 
+          onClick={toggleTheme}
+          style={{ 
+            background: 'transparent', border: 'none', color: 'var(--ink)', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            width: '32px', height: '32px', borderRadius: '50%',
+            transition: 'background 0.2s'
+          }}
+          onMouseOver={(e) => e.currentTarget.style.background = 'var(--surface-hover)'}
+          onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+        >
+          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
+
         {/* Khối Thông báo */}
         <div ref={dropdownRef} style={{ position: 'relative' }}>
           <button 
             onClick={() => setIsOpen(!isOpen)}
             style={{ 
-              background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer',
+              background: 'transparent', border: 'none', color: 'var(--ink)', cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative',
               width: '32px', height: '32px', borderRadius: '50%',
-              backgroundColor: isOpen ? 'rgba(255,255,255,0.1)' : 'transparent',
+              backgroundColor: isOpen ? 'var(--surface-hover)' : 'transparent',
               transition: 'background 0.2s'
             }}
           >
@@ -121,9 +139,9 @@ const Header: React.FC = () => {
             {unreadCount > 0 && (
               <span style={{
                 position: 'absolute', top: '0px', right: '0px',
-                background: '#ef4444', color: 'white', fontSize: '10px',
+                background: 'var(--red)', color: 'white', fontSize: '10px',
                 fontWeight: 700, padding: '1px 5px', borderRadius: '10px',
-                lineHeight: 1, border: '2px solid var(--blue)'
+                lineHeight: 1, border: '2px solid var(--surface)'
               }}>
                 {unreadCount > 99 ? '99+' : unreadCount}
               </span>
@@ -134,7 +152,7 @@ const Header: React.FC = () => {
           {isOpen && (
             <div style={{
               position: 'absolute', top: '44px', right: '-10px', width: '340px',
-              background: '#fff', borderRadius: '12px', boxShadow: '0 4px 24px rgba(0,0,0,0.15)',
+              background: 'var(--surface)', borderRadius: '12px', boxShadow: 'var(--shadow-lg)',
               border: '1px solid var(--line)', color: 'var(--ink)', zIndex: 100,
               overflow: 'hidden', display: 'flex', flexDirection: 'column', maxHeight: '420px'
             }}>
@@ -156,13 +174,13 @@ const Header: React.FC = () => {
                         <button 
                           onClick={() => handleNotificationClick(notif)}
                           style={{
-                            width: '100%', textAlign: 'left', background: notif.isRead ? '#fff' : 'var(--blue-50)',
+                            width: '100%', textAlign: 'left', background: notif.isRead ? 'var(--surface)' : 'var(--blue-50)',
                             border: 'none', padding: '12px 16px', cursor: 'pointer',
                             display: 'flex', gap: '12px', alignItems: 'flex-start',
                             transition: 'background 0.15s'
                           }}
-                          onMouseOver={(e) => e.currentTarget.style.background = notif.isRead ? 'var(--soft)' : '#f3e8e8'}
-                          onMouseOut={(e) => e.currentTarget.style.background = notif.isRead ? '#fff' : 'var(--blue-50)'}
+                          onMouseOver={(e) => e.currentTarget.style.background = notif.isRead ? 'var(--soft)' : 'var(--blue-100)'}
+                          onMouseOut={(e) => e.currentTarget.style.background = notif.isRead ? 'var(--surface)' : 'var(--blue-50)'}
                         >
                           <div style={{ marginTop: '2px' }}>{notif.icon}</div>
                           <div style={{ flex: 1 }}>
@@ -189,12 +207,12 @@ const Header: React.FC = () => {
         <div className="user-profile" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <div className="avatar" style={{ 
             width: '32px', height: '32px', borderRadius: '50%', 
-            backgroundColor: 'rgba(255,255,255,0.2)', color: '#fff',
+            backgroundColor: 'var(--soft)', color: 'var(--blue)',
             display: 'flex', alignItems: 'center', justifyContent: 'center'
           }}>
             <User size={16} />
           </div>
-          <span style={{ fontWeight: 600, fontSize: '13px' }}>
+          <span style={{ fontWeight: 600, fontSize: '13px', color: 'var(--ink)' }}>
             {role === 'admin' ? 'Phòng Đào tạo' : 'Giảng viên'}
           </span>
         </div>

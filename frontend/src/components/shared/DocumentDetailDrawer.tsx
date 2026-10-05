@@ -153,7 +153,7 @@ const DocumentDetailDrawer: React.FC = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 const token = localStorage.getItem('token') || '';
-                window.open(`http://localhost:8000/api/v1/documents/${encodeURIComponent(docId)}/pdf?token=${token}`, '_blank');
+                window.open(`http://localhost:8000/api/v1/documents/${encodeURIComponent(docId || '')}/pdf?token=${token}`, '_blank');
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-1px)';
@@ -435,7 +435,7 @@ const DocumentDetailDrawer: React.FC = () => {
           display: 'flex', alignItems: 'center', justifyContent: 'center'
         }}>
           <div style={{
-            background: '#fff', width: '600px', maxWidth: '90vw', maxHeight: '90vh',
+            background: 'var(--surface)', width: '600px', maxWidth: '90vw', maxHeight: '90vh',
             borderRadius: '8px', display: 'flex', flexDirection: 'column',
             boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
           }}>
@@ -718,7 +718,7 @@ const DocumentDetailDrawer: React.FC = () => {
               <button 
                 onClick={() => setShowPreview(false)}
                 style={{
-                  padding: '8px 16px', border: '1px solid #ddd', background: '#fff', 
+                  padding: '8px 16px', border: '1px solid #ddd', background: 'var(--surface)', 
                   borderRadius: '4px', cursor: 'pointer', fontWeight: '500'
                 }}
               >

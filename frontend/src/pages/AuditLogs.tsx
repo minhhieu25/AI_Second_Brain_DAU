@@ -114,7 +114,7 @@ const AuditLogs: React.FC = () => {
         {/* --- KHU VỰC BỘ LỌC --- */}
         <div style={{ 
           display: 'flex', gap: '15px', marginBottom: '24px', flexWrap: 'wrap',
-          background: '#fff', padding: '16px', borderRadius: '12px', border: '1px solid var(--line)',
+          background: 'var(--surface)', padding: '16px', borderRadius: '12px', border: '1px solid var(--line)',
           boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
         }}>
           {/* Tìm kiếm */}
@@ -157,7 +157,7 @@ const AuditLogs: React.FC = () => {
         </div>
 
         {filteredLogs.length === 0 ? (
-          <div style={{ padding: '60px 40px', textAlign: 'center', backgroundColor: '#fff', borderRadius: '16px', border: '1px dashed var(--line)' }}>
+          <div style={{ padding: '60px 40px', textAlign: 'center', backgroundColor: 'var(--surface)', borderRadius: '16px', border: '1px dashed var(--line)' }}>
             <h3 style={{ color: 'var(--muted)', fontSize: '20px', marginBottom: '8px' }}>Không tìm thấy thao tác nào</h3>
             <p className="sub">Hãy thử thay đổi điều kiện lọc hoặc tìm kiếm.</p>
           </div>
@@ -179,14 +179,14 @@ const AuditLogs: React.FC = () => {
                 icon = <Edit size={14}/>;
               } else if (isRejected) {
                 borderColor = 'var(--red)';
-                bgColor = '#fff1f0';
+                bgColor = 'var(--red-bg)';
                 textColor = 'var(--red)';
                 icon = <XCircle size={14}/>;
               }
 
               return (
                 <div key={log.id} style={{ 
-                  background: '#fff', borderRadius: '12px', border: '1px solid var(--line)', 
+                  background: 'var(--surface)', borderRadius: '12px', border: '1px solid var(--line)', 
                   padding: '20px', boxShadow: '0 4px 15px rgba(0,0,0,0.02)',
                   borderLeft: `4px solid ${borderColor}`
                 }}>
@@ -253,7 +253,7 @@ const AuditLogs: React.FC = () => {
                     
                     {/* Bản Chỉnh sửa Người dùng (nếu có) */}
                     {isEdited && (
-                      <div style={{ background: '#fffbe6', padding: '16px', borderRadius: '8px', border: '1px solid #ffe58f', height: '100%' }}>
+                      <div style={{ background: 'var(--amber-bg)', padding: '16px', borderRadius: '8px', border: '1px solid #ffe58f', height: '100%' }}>
                         <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--amber)', marginBottom: '8px', textTransform: 'uppercase' }}>
                           Bản chỉnh sửa (Người dùng)
                         </div>
