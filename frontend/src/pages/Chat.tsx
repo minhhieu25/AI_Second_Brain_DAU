@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, FileText, Loader } from 'lucide-react';
+import { Send, Bot, User, FileText, Loader, History, Plus } from 'lucide-react';
 import { useDetail } from '../context/DetailContext';
+import axiosClient from '../api/axiosClient';
 
 interface Message {
   id: string;
@@ -9,30 +10,25 @@ interface Message {
   citations?: any[];
 }
 
-const Chat: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>(() => {
-    const saved = localStorage.getItem('chat_history');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error("Lỗi đọc lịch sử chat:", e);
-      }
-    }
-    return [
-      {
-        id: 'welcome',
-        role: 'assistant',
-        content: 'Xin chào! Tôi là Trợ lý AI của DAU Second Brain. Bạn có thể hỏi tôi bất kỳ thông tin nào về các Thông tư, Quy chế đã được duyệt (Published). Ví dụ: "Chuẩn chương trình đào tạo quy định thế nào?"'
-      }
-    ];
-  });
+interface ChatSession {
+  id: number;
+  title: string;
+  updated_at: string;
+}
 
-  useEffect(() => {
-    localStorage.setItem('chat_history', JSON.stringify(messages));
-  }, [messages]);
+const Chat: React.FC = () => {
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: 'welcome',
+      role: 'assistant',
+      content: 'Xin chào! Tôi là Trợ lý AI của DAU Second Brain. Bạn có thể hỏi tôi bất kỳ thông tin nào về các Thông tư, Quy chế đã được duyệt (Published). Ví dụ: "Chuẩn chương trình đào tạo quy định thế nào?"'
+    }
+  ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [sessions, setSessions] = useState<ChatSession[]>([]);
+  const [currentSessionId, setCurrentSessionId] = useState<number | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { openDetail } = useDetail();
 
@@ -43,6 +39,51 @@ const Chat: React.FC = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages, isLoading]);
+
+  const loadSessions = async () => {
+    try {
+      const res = await axiosClient.get('/chat/sessions');
+      setSessions(res.data.sessions);
+    } catch (e) {
+      console.error("Lỗi tải danh sách session:", e);
+    }
+  };
+
+  useEffect(() => {
+    loadSessions();
+  }, []);
+
+  const startNewChat = () => {
+    setCurrentSessionId(null);
+    setMessages([
+      {
+        id: 'welcome',
+        role: 'assistant',
+        content: 'Xin chào! Tôi là Trợ lý AI của DAU Second Brain. Bạn có thể hỏi tôi bất kỳ thông tin nào về các Thông tư, Quy chế đã được duyệt (Published). Ví dụ: "Chuẩn chương trình đào tạo quy định thế nào?"'
+      }
+    ]);
+    setShowHistory(false);
+  };
+
+  const loadSessionHistory = async (sessionId: number) => {
+    try {
+      setIsLoading(true);
+      const res = await axiosClient.get(`/chat/sessions/${sessionId}`);
+      const historyMsgs = res.data.messages.map((m: any) => ({
+        id: m.id.toString(),
+        role: m.role,
+        content: m.content,
+        citations: m.citations
+      }));
+      setMessages(historyMsgs);
+      setCurrentSessionId(sessionId);
+      setShowHistory(false);
+    } catch (e) {
+      console.error("Lỗi tải tin nhắn cũ:", e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -58,13 +99,13 @@ const Chat: React.FC = () => {
     setIsLoading(true);
     
     try {
-      const response = await fetch('http://localhost:8000/api/v1/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: userMessage.content })
-      });
-      
-      const data = await response.json();
+      const payload: any = { query: userMessage.content };
+      if (currentSessionId) {
+        payload.session_id = currentSessionId;
+      }
+
+      const response = await axiosClient.post('/chat', payload);
+      const data = response.data;
       
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -74,12 +115,17 @@ const Chat: React.FC = () => {
       };
       
       setMessages(prev => [...prev, assistantMessage]);
+      
+      if (!currentSessionId && data.session_id) {
+        setCurrentSessionId(data.session_id);
+        loadSessions();
+      }
     } catch (error) {
       console.error("Lỗi khi chat:", error);
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: "Xin lỗi, đã có lỗi kết nối đến máy chủ. Vui lòng thử lại sau."
+        content: "Xin lỗi, đã có lỗi kết nối đến máy chủ. Vui lòng kiểm tra lại đăng nhập hoặc mạng."
       }]);
     } finally {
       setIsLoading(false);
@@ -87,10 +133,43 @@ const Chat: React.FC = () => {
   };
 
   return (
-    <section id="tra-cuu-ai" style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 40px)', padding: '20px' }}>
-      <div style={{ marginBottom: '20px' }}>
-        <h2>Tra cứu AI (RAG Chatbot)</h2>
-        <p className="sub">Hỏi đáp dựa trên CSDL Vector. Mọi câu trả lời đều có trích dẫn từ văn bản gốc để chống Ảo giác (Hallucination).</p>
+    <section id="tra-cuu-ai" style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 40px)', padding: '20px', position: 'relative' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <div>
+          <h2>Tra cứu AI (RAG Chatbot)</h2>
+          <p className="sub">Hỏi đáp dựa trên CSDL Vector. Lịch sử được lưu riêng theo từng tài khoản.</p>
+        </div>
+        
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button className="btn" onClick={startNewChat} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: 'var(--blue)', color: 'white', borderRadius: '8px' }}>
+            <Plus size={16} /> Đoạn chat mới
+          </button>
+          <div style={{ position: 'relative' }}>
+            <button className="btn" onClick={() => setShowHistory(!showHistory)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: '8px' }}>
+              <History size={16} /> Lịch sử chat
+            </button>
+            
+            {showHistory && (
+              <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '8px', width: '300px', background: 'white', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 10, maxHeight: '400px', overflowY: 'auto' }}>
+                <div style={{ padding: '12px', borderBottom: '1px solid var(--border)', fontWeight: 600 }}>Lịch sử trò chuyện</div>
+                {sessions.length === 0 ? (
+                  <div style={{ padding: '16px', textAlign: 'center', color: 'var(--muted)' }}>Chưa có đoạn chat nào.</div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    {sessions.map(s => (
+                      <div key={s.id} onClick={() => loadSessionHistory(s.id)} style={{ padding: '12px', borderBottom: '1px solid #f1f5f9', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '4px' }} className="hover-bg-gray">
+                        <span style={{ fontSize: '14px', fontWeight: currentSessionId === s.id ? 600 : 400, color: currentSessionId === s.id ? 'var(--blue)' : 'var(--text)' }}>
+                          {s.title}
+                        </span>
+                        <span style={{ fontSize: '12px', color: 'var(--muted)' }}>{new Date(s.updated_at).toLocaleString('vi-VN')}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       <div style={{ flex: 1, backgroundColor: 'var(--card-bg)', borderRadius: '12px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -179,10 +258,11 @@ const Chat: React.FC = () => {
         </div>
       </div>
       
-      {/* CSS cho hiệu ứng xoay (Loader) */}
+      {/* CSS cho hiệu ứng xoay và hover */}
       <style>{`
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .spin { animation: spin 1s linear infinite; }
+        .hover-bg-gray:hover { background-color: #f8fafc; }
       `}</style>
     </section>
   );

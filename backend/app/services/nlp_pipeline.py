@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+ZAI_API_KEY = os.getenv("ZAI_API_KEY")
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
 
@@ -386,8 +387,8 @@ def generate_rag_answer(query: str, context_chunks: list[str]) -> str:
     """
     Sử dụng Gemini API để sinh câu trả lời RAG dựa trên các đoạn ngữ cảnh.
     """
-    if not GEMINI_API_KEY:
-        return "Hệ thống chưa được cấu hình GEMINI_API_KEY trong file .env. Vui lòng thêm API Key để sử dụng tính năng Chatbot AI."
+    if not GEMINI_API_KEY and not ZAI_API_KEY:
+        return "Hệ thống chưa được cấu hình GEMINI_API_KEY hay ZAI_API_KEY trong file .env. Vui lòng thêm API Key để sử dụng tính năng Chatbot AI."
         
     context_text = "\n\n---\n\n".join(context_chunks)
     
@@ -402,12 +403,41 @@ TÀI LIỆU NGỮ CẢNH:
 
 CÂU HỎI CỦA NGƯỜI DÙNG: {query}
 """
-    try:
-        model = genai.GenerativeModel('gemini-3.5-flash')
-        response = model.generate_content(prompt)
-        return response.text
-    except Exception as e:
-        error_msg = str(e)
-        if "429" in error_msg or "Quota exceeded" in error_msg:
-            return "Hệ thống đang quá tải do hết lượt gọi AI miễn phí (Lỗi 429 Quota Exceeded). Sếp vui lòng đợi khoảng 1-2 phút rồi hỏi lại nhé!"
-        return f"Xin lỗi, đã xảy ra lỗi khi gọi AI: {error_msg}"
+    error_msg = ""
+    # 1. Thử dùng Gemini trước
+    if GEMINI_API_KEY:
+        try:
+            model = genai.GenerativeModel('gemini-3.5-flash')
+            response = model.generate_content(prompt)
+            return response.text
+        except Exception as e:
+            error_msg = str(e)
+            print(f"Lỗi Gemini: {error_msg}. Chuyển sang Z.ai dự phòng...")
+            
+    # 2. Nếu Gemini không có key hoặc bị lỗi (hết token), chuyển qua Z.ai (GLM)
+    if ZAI_API_KEY:
+        try:
+            import requests
+            url = "https://api.z.ai/api/paas/v4/chat/completions"
+            headers = {
+                "Authorization": f"Bearer {ZAI_API_KEY}",
+                "Content-Type": "application/json"
+            }
+            data = {
+                "model": "glm-4-flash",
+                "messages": [
+                    {"role": "user", "content": prompt}
+                ]
+            }
+            res = requests.post(url, headers=headers, json=data)
+            if res.status_code == 200:
+                resp_json = res.json()
+                return resp_json["choices"][0]["message"]["content"]
+            else:
+                return f"Lỗi gọi Z.ai API: {res.text}"
+        except Exception as e:
+            return f"Lỗi khi gọi dự phòng Z.ai: {str(e)}"
+            
+    if "429" in error_msg or "Quota exceeded" in error_msg:
+        return "Hệ thống đang quá tải do hết lượt gọi AI miễn phí. Sếp vui lòng đợi khoảng 1-2 phút rồi hỏi lại nhé!"
+    return f"Xin lỗi, đã xảy ra lỗi khi gọi AI: {error_msg}"

@@ -115,3 +115,20 @@ class AuditTrail(Base):
     action = Column(String, nullable=False)
     author = Column(String, default="Admin")
     timestamp = Column(String, nullable=False)
+
+class ChatSession(Base):
+    __tablename__ = "chat_sessions"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    title = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.now)
+    updated_at = Column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
+
+class ChatMessage(Base):
+    __tablename__ = "chat_messages"
+    id = Column(Integer, primary_key=True, index=True)
+    session_id = Column(Integer, ForeignKey("chat_sessions.id"), nullable=False)
+    role = Column(String, nullable=False)
+    content = Column(Text, nullable=False)
+    citations = Column(JSONB, nullable=True)
+    created_at = Column(DateTime, default=datetime.datetime.now)

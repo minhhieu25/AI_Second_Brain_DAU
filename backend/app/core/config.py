@@ -3,8 +3,9 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     PROJECT_NAME: str = "DAU Second Brain API"
     API_V1_STR: str = "/api/v1"
-    DATABASE_URL: str = "postgresql://postgres:postgres@localhost:5432/dau_second_brain"
+    DATABASE_URL: str = "postgresql://postgres:postgres@localhost:5432/dau_second_brain_mine"
     GEMINI_API_KEY: str | None = None
+    ZAI_API_KEY: str | None = None
 
     class Config:
         env_file = ".env"
