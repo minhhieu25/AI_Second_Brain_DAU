@@ -129,6 +129,11 @@ const Admin: React.FC = () => {
       setMessage('Vui lòng chọn file định dạng PDF.');
       return;
     }
+    if (selectedFile.size > 20 * 1024 * 1024) {
+      setStatus('error');
+      setMessage('Dung lượng file vượt quá giới hạn 20MB.');
+      return;
+    }
     setFile(selectedFile);
     setStatus('idle');
     setMessage('');
@@ -506,23 +511,50 @@ const Admin: React.FC = () => {
               </div>
             </div>
             
-            <button 
-              className="btn btn-primary"
-              onClick={handleUpload}
-              disabled={status === 'uploading'}
-              style={{
-                background: 'var(--blue)',
-                color: 'white',
-                border: 'none',
-                padding: '10px 20px',
-                borderRadius: '8px',
-                fontWeight: 600,
-                cursor: status === 'uploading' ? 'not-allowed' : 'pointer',
-                opacity: status === 'uploading' ? 0.7 : 1
-              }}
-            >
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button 
+                className="btn"
+                onClick={() => {
+                  setFile(null);
+                  setStatus('idle');
+                  setMessage('');
+                  if (inputRef.current) inputRef.current.value = '';
+                }}
+                disabled={status === 'uploading'}
+                style={{
+                  background: 'transparent',
+                  color: 'var(--muted)',
+                  border: '1px solid var(--border)',
+                  padding: '10px',
+                  borderRadius: '8px',
+                  cursor: status === 'uploading' ? 'not-allowed' : 'pointer',
+                  opacity: status === 'uploading' ? 0.7 : 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+                title="Hủy chọn file"
+              >
+                <Trash2 size={20} />
+              </button>
+              <button 
+                className="btn btn-primary"
+                onClick={handleUpload}
+                disabled={status === 'uploading'}
+                style={{
+                  background: 'var(--blue)',
+                  color: 'white',
+                  border: 'none',
+                  padding: '10px 20px',
+                  borderRadius: '8px',
+                  fontWeight: 600,
+                  cursor: status === 'uploading' ? 'not-allowed' : 'pointer',
+                  opacity: status === 'uploading' ? 0.7 : 1
+                }}
+              >
               {status === 'uploading' ? 'Đang xử lý...' : 'Bắt đầu Xử lý'}
             </button>
+            </div>
           </div>
         )}
       </div>

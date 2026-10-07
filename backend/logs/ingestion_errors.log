@@ -46,3 +46,10 @@ pip install python-multipart
 2026-10-01 22:12:08,243 - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
 2026-10-05 21:04:38,381 - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
 2026-10-05 21:28:54,036 - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-10-07 21:33:08,752 - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-10-07 21:33:15,376 - WARNING - Could not reach the Hub ([WinError 10054] An existing connection was forcibly closed by the remote host). Using cached commit hash for 'timpal0l/mdeberta-v3-base-squad2'.
+2026-10-07 21:33:18,871 - WARNING - Could not reach the Hub ([WinError 10054] An existing connection was forcibly closed by the remote host). Using cached commit hash for 'timpal0l/mdeberta-v3-base-squad2'.
+2026-10-07 21:33:28,699 - WARNING - Could not reach the Hub ([WinError 10054] An existing connection was forcibly closed by the remote host). Using cached commit hash for 'VietAI/vit5-base-vietnews-summarization'.
+2026-10-07 21:33:34,146 - WARNING - Could not reach the Hub ([WinError 10054] An existing connection was forcibly closed by the remote host). Using cached commit hash for 'MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7'.
+2026-10-07 21:33:36,036 - WARNING - Could not reach the Hub ([WinError 10054] An existing connection was forcibly closed by the remote host). Using cached commit hash for 'MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7'.
+2026-10-07 21:33:49,456 - WARNING - Could not reach the Hub ([WinError 10054] An existing connection was forcibly closed by the remote host). Using cached commit hash for 'timpal0l/mdeberta-v3-base-squad2'.
