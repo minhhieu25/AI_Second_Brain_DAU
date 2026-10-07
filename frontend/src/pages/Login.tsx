@@ -52,7 +52,11 @@ const Login: React.FC = () => {
         navigate('/');
       }
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Sai email hoặc mật khẩu');
+      if (err.response?.status === 429) {
+        setError('Quá nhiều yêu cầu đăng nhập. Vui lòng thử lại sau 1 phút.');
+      } else {
+        setError(err.response?.data?.detail || err.response?.data?.error || 'Sai email hoặc mật khẩu');
+      }
     } finally {
       setLoading(false);
     }

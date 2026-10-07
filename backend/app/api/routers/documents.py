@@ -11,7 +11,8 @@ from ...db.models import Document, Obligation, Threshold, DocumentRelation, Audi
 from ...services.nlp_pipeline import generate_rag_answer, extractor, classify_text
 from ...services.pdf_parser import extract_text_from_pdf, chunk_document
 from ...services.ingestion.crawl_documents import crawl_chinhphu, get_sync_status, BASE_OUTPUT_DIR
-from ...core.security import get_current_user, get_current_admin
+from ...core.security import get_current_user, get_current_admin, SECRET_KEY, ALGORITHM
+from jose import jwt, JWTError
 from ...db.models import User
 
 class ExtractRequest(BaseModel):
@@ -29,6 +30,17 @@ async def get_document_pdf(document_id: str, token: Optional[str] = None, db: Se
     Có thể truyền token qua query param (?token=...) để xác thực vì khi mở tab mới, 
     trình duyệt sẽ không tự động gửi Header Authorization.
     """
+    if not token:
+        raise HTTPException(status_code=401, detail="Token is required to access this document")
+    
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email = payload.get("sub")
+        if not email:
+            raise HTTPException(status_code=401, detail="Invalid token structure")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+        
     # 1. Truy vấn văn bản
     # Có thể document_id là int (id) hoặc string (số hiệu / filename)
     document = None
@@ -88,6 +100,18 @@ async def upload_document(background_tasks: BackgroundTasks, file: UploadFile = 
     """
     if not file.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Chỉ chấp nhận file PDF")
+        
+    if file.content_type != "application/pdf":
+        raise HTTPException(status_code=400, detail="MIME type không hợp lệ. Vui lòng tải lên file PDF chuẩn.")
+        
+    # Read the file to check size
+    file_bytes = await file.read()
+    if len(file_bytes) > 20 * 1024 * 1024: # 20 MB
+        raise HTTPException(status_code=400, detail="Dung lượng file vượt quá giới hạn 20MB.")
+    
+    # Seek back to 0 so we can save it
+    await file.seek(0)
+    
         
     existing_doc = db.query(Document).filter(Document.filename == file.filename).first()
     if existing_doc:

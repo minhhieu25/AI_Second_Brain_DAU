@@ -120,7 +120,6 @@ def check_new_chinhphu():
                 continue
 
             if not os.path.exists(filepath):
-                print(f"DEBUG: File không tồn tại trên ổ đĩa: {filepath}")
                 has_new = True
                 break
                 

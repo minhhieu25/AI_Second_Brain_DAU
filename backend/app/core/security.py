@@ -9,10 +9,11 @@ from app.db.session import get_db
 from app.db.models import User
 from app.api.schemas.user import TokenData
 
-# Thay đổi bằng secret key phức tạp trong production (thường cấu hình ở .env)
-SECRET_KEY = "DAU_AI_SECOND_BRAIN_SUPER_SECRET_KEY_123!" 
+from app.core.config import settings
+
+SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7 # 7 ngày
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 12 # 12 hours
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

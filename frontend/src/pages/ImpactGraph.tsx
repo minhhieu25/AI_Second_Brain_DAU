@@ -37,9 +37,9 @@ const ImpactGraph: React.FC = () => {
           <h2>Đồ thị mức độ ảnh hưởng</h2>
           <p className="sub">Đang tải dữ liệu đồ thị...</p>
           <div className="impact" style={{ padding: '24px' }}>
-             <div style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}>
-               <span className="skeleton" style={{ width: '100%', height: '100%', borderRadius: '12px' }}></span>
-             </div>
+            <div style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}>
+              <span className="skeleton" style={{ width: '100%', height: '100%', borderRadius: '12px' }}></span>
+            </div>
           </div>
         </div>
       </section>
@@ -66,13 +66,13 @@ const ImpactGraph: React.FC = () => {
   // Calculate dynamic widths based on text length
   const charWidth = 7.5;
   const boxPadding = 30;
-  
+
   let rootTextLen = x && x.canCu ? x.canCu.length : 0;
   if (x && x.thayBang && x.thayBang.length > rootTextLen) {
     rootTextLen = x.thayBang.length;
   }
   const bw = Math.max(214, rootTextLen * charWidth + boxPadding);
-  
+
   let maxDepLen = 0;
   deps.forEach((d: any) => {
     if (d.soHieu && d.soHieu.length > maxDepLen) maxDepLen = d.soHieu.length;
@@ -83,7 +83,7 @@ const ImpactGraph: React.FC = () => {
   const arrowSpacing = 80;
   const dx = bx + bw + arrowSpacing;
   const W = dx + dw + 20;
-  
+
   const rowH = 50;
   const pad = 44;
   const dh = 38;
@@ -121,7 +121,7 @@ const ImpactGraph: React.FC = () => {
                 <option value="Khác">Khác</option>
               </select>
             </div>
-            
+
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: '1' }}>
               <span style={{ fontSize: '13px', color: 'var(--muted)', whiteSpace: 'nowrap' }}>
                 Chọn căn cứ thay đổi:
