@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, BackgroundTasks, Request
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import Dict, Any, List, Optional
@@ -24,17 +24,16 @@ class ProcessCrawledRequest(BaseModel):
     filename: str
 
 @router.get("/documents/{document_id:path}/pdf")
-async def get_document_pdf(document_id: str, token: Optional[str] = None, db: Session = Depends(get_db)):
+async def get_document_pdf(request: Request, document_id: str, token: Optional[str] = None, db: Session = Depends(get_db)):
     """
     Trả về trực tiếp file PDF của văn bản để trình duyệt hiển thị.
-    Có thể truyền token qua query param (?token=...) để xác thực vì khi mở tab mới, 
-    trình duyệt sẽ không tự động gửi Header Authorization.
     """
-    if not token:
+    access_token = request.cookies.get("access_token") or token
+    if not access_token:
         raise HTTPException(status_code=401, detail="Token is required to access this document")
     
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
         email = payload.get("sub")
         if not email:
             raise HTTPException(status_code=401, detail="Invalid token structure")

@@ -35,7 +35,7 @@ const Admin: React.FC = () => {
   const handlePing = async () => {
     setIsPinging(true);
     try {
-      const response = await fetch('http://localhost:8000/api/v1/system/ping', { method: 'POST' });
+      const response = await fetch('/api/v1/system/ping', { method: 'POST' });
       const data = await response.json();
       if (data.has_new_docs) {
         setStatus('success');
@@ -59,7 +59,7 @@ const Admin: React.FC = () => {
 
   const fetchCrawledFiles = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/system/crawled_files');
+      const response = await fetch('/api/v1/system/crawled_files');
       const result = await response.json();
       setCrawledFiles(result.unprocessed_files || []);
     } catch (error) {
@@ -144,7 +144,7 @@ const Admin: React.FC = () => {
     formData.append('file', file);
     
     try {
-      const response = await fetch('http://localhost:8000/api/v1/documents/upload', {
+      const response = await fetch('/api/v1/documents/upload', {
         method: 'POST',
         body: formData,
       });
@@ -171,7 +171,7 @@ const Admin: React.FC = () => {
     setStatus('crawling');
     setMessage('Đang kết nối Chinhphu.vn và tải văn bản về...');
     try {
-      const response = await fetch('http://localhost:8000/api/v1/system/crawl', { method: 'POST' });
+      const response = await fetch('/api/v1/system/crawl', { method: 'POST' });
       if (response.ok) {
         setStatus('success');
         setMessage('Đã cào xong văn bản mới! Vui lòng kiểm tra danh sách bên dưới để bắt đầu xử lý.');
@@ -194,7 +194,7 @@ const Admin: React.FC = () => {
     setStatus('processing');
     setMessage(`Đang đưa ${filename} vào hàng đợi xử lý bằng AI... Bạn có thể tiếp tục công việc.`);
     try {
-      const response = await fetch('http://localhost:8000/api/v1/documents/process_crawled', {
+      const response = await fetch('/api/v1/documents/process_crawled', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ filename })
@@ -230,7 +230,7 @@ const Admin: React.FC = () => {
     
     setProcessingFiles(prev => ({ ...prev, [filename]: true }));
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/documents/crawled/${encodeURIComponent(filename)}`, {
+      const response = await fetch(`/api/v1/documents/crawled/${encodeURIComponent(filename)}`, {
         method: 'DELETE'
       });
       const data = await response.json();

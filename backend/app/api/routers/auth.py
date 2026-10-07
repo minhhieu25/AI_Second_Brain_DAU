@@ -1,5 +1,5 @@
 from datetime import timedelta
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
@@ -11,9 +11,9 @@ from app.core.limiter import limiter
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
-@router.post("/login", response_model=Token)
+@router.post("/login")
 @limiter.limit("5/minute")
-async def login_for_access_token(request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+async def login_for_access_token(response: Response, request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == form_data.username).first()
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
@@ -26,7 +26,23 @@ async def login_for_access_token(request: Request, form_data: OAuth2PasswordRequ
     access_token = create_access_token(
         data={"sub": user.email, "role": user.role}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    
+    # Set HttpOnly Cookie
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        secure=False, # True if using HTTPS
+        samesite="lax",
+        max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60
+    )
+    
+    return {"message": "Đăng nhập thành công"}
+
+@router.post("/logout")
+async def logout(response: Response):
+    response.delete_cookie("access_token", httponly=True, samesite="lax")
+    return {"message": "Đã đăng xuất"}
 
 @router.get("/me", response_model=UserResponse)
 async def read_users_me(current_user: User = Depends(get_current_user)):

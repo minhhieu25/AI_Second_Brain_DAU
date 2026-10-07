@@ -28,7 +28,7 @@ const DocumentDetailDrawer: React.FC = () => {
     }
 
     // Fetch dữ liệu thật từ API
-    fetch(`http://localhost:8000/api/v1/documents/detail/${encodeURIComponent(docId)}`)
+    fetch(`/api/v1/documents/detail/${encodeURIComponent(docId)}`)
       .then(res => {
         if (!res.ok) throw new Error('Not found');
         return res.json();
@@ -45,7 +45,7 @@ const DocumentDetailDrawer: React.FC = () => {
 
   const handleDownloadReport = async (soHieu: string) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/reports/template/${encodeURIComponent(soHieu)}`);
+      const response = await fetch(`/api/v1/reports/template/${encodeURIComponent(soHieu)}`);
       if (!response.ok) throw new Error('Download failed');
       
       const blob = await response.blob();
@@ -153,7 +153,7 @@ const DocumentDetailDrawer: React.FC = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 const token = localStorage.getItem('token') || '';
-                window.open(`http://localhost:8000/api/v1/documents/${encodeURIComponent(docId || '')}/pdf?token=${token}`, '_blank');
+                window.open(`/api/v1/documents/${encodeURIComponent(docId || '')}/pdf?token=${token}`, '_blank');
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-1px)';

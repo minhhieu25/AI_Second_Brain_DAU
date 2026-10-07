@@ -200,7 +200,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     fetchData(); // Tải lần đầu
     
     // Mở kết nối SSE tới Backend
-    const evtSource = new EventSource('http://localhost:8000/api/v1/system/stream');
+    const evtSource = new EventSource('/api/v1/system/stream');
     
     evtSource.onmessage = (event) => {
       if (event.data === 'update') {

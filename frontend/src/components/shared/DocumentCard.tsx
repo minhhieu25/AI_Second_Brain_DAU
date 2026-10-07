@@ -33,7 +33,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
           onClick={(e) => { 
             e.stopPropagation(); 
             const token = localStorage.getItem('token') || '';
-            window.open(`http://localhost:8000/api/v1/documents/${id}/pdf?token=${token}`, '_blank');
+            window.open(`/api/v1/documents/${id}/pdf?token=${token}`, '_blank');
           }}
         >
           <ExternalLink size={14} /> Xem gốc

@@ -30,7 +30,7 @@ const RejectedDocs: React.FC = () => {
 
   const fetchRejectedDocs = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/documents/rejected');
+      const response = await fetch('/api/v1/documents/rejected');
       const data = await response.json();
       setDocuments(data.documents || []);
     } catch (error) {
@@ -62,7 +62,7 @@ const RejectedDocs: React.FC = () => {
         setConfirmState(prev => ({ ...prev, isOpen: false }));
         setProcessingId(id);
         try {
-          const response = await fetch(`http://localhost:8000/api/v1/documents/${id}/reprocess`, {
+          const response = await fetch(`/api/v1/documents/${id}/reprocess`, {
             method: 'POST'
           });
           const result = await response.json();
@@ -91,7 +91,7 @@ const RejectedDocs: React.FC = () => {
         setConfirmState(prev => ({ ...prev, isOpen: false }));
         setProcessingId(id);
         try {
-          const response = await fetch(`http://localhost:8000/api/v1/documents/${id}/hard_delete`, {
+          const response = await fetch(`/api/v1/documents/${id}/hard_delete`, {
             method: 'DELETE'
           });
           const result = await response.json();

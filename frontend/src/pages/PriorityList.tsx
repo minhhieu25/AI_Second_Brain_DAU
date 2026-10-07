@@ -18,7 +18,7 @@ const PriorityList: React.FC = () => {
     markAsRead('warning', soHieu);
     openDetail(soHieu);
     try {
-      await fetch(`http://localhost:8000/api/v1/auditing/warnings/${encodeURIComponent(soHieu)}/resolve`, {
+      await fetch(`/api/v1/auditing/warnings/${encodeURIComponent(soHieu)}/resolve`, {
         method: 'POST'
       });
       refreshData();

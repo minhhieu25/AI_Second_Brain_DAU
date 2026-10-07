@@ -34,7 +34,7 @@ const Topics: React.FC = () => {
 
   // Lấy danh sách các chủ đề ban đầu
   useEffect(() => {
-    fetch('http://localhost:8000/api/v1/topics')
+    fetch('/api/v1/topics')
       .then(res => res.json())
       .then(data => {
         setTopics(data.topics || []);
@@ -57,7 +57,7 @@ const Topics: React.FC = () => {
     }
 
     setDocuments([]);
-    fetch(`http://localhost:8000/api/v1/topics/${selectedTopic}/documents`)
+    fetch(`/api/v1/topics/${selectedTopic}/documents`)
       .then(res => res.json())
       .then(data => {
         setDocuments(data.documents || []);

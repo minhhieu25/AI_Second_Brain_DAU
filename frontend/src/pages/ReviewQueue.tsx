@@ -46,7 +46,7 @@ const ReviewQueue: React.FC = () => {
 
   const fetchPendingData = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/review/pending');
+      const response = await fetch('/api/v1/review/pending');
       const data = await response.json();
 
       const nghiaVu: ReviewItem[] = (data.nghiaVu || []).map((i: any) => ({ ...i, _itemType: 'nghiaVu' }));
@@ -70,7 +70,7 @@ const ReviewQueue: React.FC = () => {
   const handlePublish = async (itemType: string, id: number, textToPublish?: string) => {
     try {
       const body = textToPublish ? JSON.stringify({ edited_summary: textToPublish }) : JSON.stringify({});
-      const response = await fetch(`http://localhost:8000/api/v1/review/${itemType}/${id}/publish`, {
+      const response = await fetch(`/api/v1/review/${itemType}/${id}/publish`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body
@@ -89,7 +89,7 @@ const ReviewQueue: React.FC = () => {
 
   const handleReject = async (itemType: string, id: number) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/review/${itemType}/${id}/reject`, {
+      const response = await fetch(`/api/v1/review/${itemType}/${id}/reject`, {
         method: 'PUT',
       });
       if (response.ok) {
@@ -105,7 +105,7 @@ const ReviewQueue: React.FC = () => {
     if (!editedText) return;
     setRevalidating(true);
     try {
-      const res = await fetch('http://localhost:8000/api/v1/review/revalidate', {
+      const res = await fetch('/api/v1/review/revalidate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -15,7 +15,7 @@ const CitationBadge: React.FC<CitationBadgeProps> = ({ documentId, sourceText, p
       e.preventDefault();
       const token = localStorage.getItem('token') || '';
       const pageHash = pageNumber ? `#page=${pageNumber}` : '';
-      window.open(`http://localhost:8000/api/v1/documents/${documentId}/pdf?token=${token}${pageHash}`, '_blank');
+      window.open(`/api/v1/documents/${documentId}/pdf?token=${token}${pageHash}`, '_blank');
     }
   };
 

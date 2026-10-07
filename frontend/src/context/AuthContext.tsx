@@ -26,47 +26,50 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<UserRole>(null);
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+  const [token, setToken] = useState<string | null>(localStorage.getItem('is_logged_in') ? 'cookie_set' : null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (token) {
-      axiosClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      fetchUser();
-    } else {
-      delete axiosClient.defaults.headers.common['Authorization'];
-      setIsLoading(false);
-    }
-  }, [token]);
+    // Luôn thử fetch user xem cookie có hợp lệ không
+    fetchUser();
+  }, []);
 
   const fetchUser = async () => {
     try {
       const response = await axiosClient.get('/auth/me');
       setUser(response.data);
       setRole(response.data.role);
+      setToken('cookie_set');
+      localStorage.setItem('is_logged_in', 'true');
     } catch (error) {
       console.error("Failed to fetch user", error);
-      logout();
+      setUser(null);
+      setRole(null);
+      setToken(null);
+      localStorage.removeItem('is_logged_in');
     } finally {
       setIsLoading(false);
     }
   };
 
   const login = (newToken: string, user_data: User) => {
-    localStorage.setItem('token', newToken);
-    setToken(newToken);
+    localStorage.setItem('is_logged_in', 'true');
+    setToken('cookie_set');
     setUser(user_data);
     setRole(user_data.role);
-    axiosClient.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
+  const logout = async () => {
+    try {
+      await axiosClient.post('/auth/logout');
+    } catch (e) {
+      console.error("Logout request failed", e);
+    }
+    localStorage.removeItem('is_logged_in');
     setToken(null);
     setUser(null);
     setRole(null);
-    delete axiosClient.defaults.headers.common['Authorization'];
     navigate('/login');
   };
 

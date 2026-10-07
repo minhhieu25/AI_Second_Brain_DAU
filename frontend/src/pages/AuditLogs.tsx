@@ -31,7 +31,7 @@ const AuditLogs: React.FC = () => {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/v1/audit/logs');
+        const response = await fetch('/api/v1/audit/logs');
         const data = await response.json();
         setLogs(data.logs || []);
       } catch (error) {
